@@ -1,6 +1,6 @@
 package com.Validation.payments.controller;
 
-import com.Validation.payments.pojo.CreatePaymentRequest;
+import com.Validation.payments.pojo.PaymentRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
     @PostMapping
-    public String createPayment(@Valid @RequestBody CreatePaymentRequest paymentRequest) {
+    public String createPayment(@Valid @RequestBody PaymentRequest paymentRequest) {
         log.info("Creating Payment..." );
         return "Payment created successfully!" + paymentRequest;
     }
