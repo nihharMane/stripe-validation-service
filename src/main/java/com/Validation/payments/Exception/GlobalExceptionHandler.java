@@ -1,43 +1,29 @@
 package com.Validation.payments.Exception;
 
-import com.Validation.payments.Constants.ErrorCode;
+
 import com.Validation.payments.pojo.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
+import java.util.List;
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<ErrorResponse>> handleValidationException(
-            MethodArgumentNotValidException ex) {
+    @ExceptionHandler(PaymentValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(
+            PaymentValidationException ex) {
 
-        List<ErrorResponse> errorList = new ArrayList<>();
+        log.error("Validation error: {}", ex.getMessage());
 
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
+        ErrorResponse body = ErrorResponse.builder()
+                .errorCode(ex.getErrorCode())
+                .errorMessage(ex.getErrorMessage())
+                .build();
 
-            String key = error.getDefaultMessage(); // "CANCEL_URL_INVALID"
-            ErrorCode errorCode;
-
-            try {
-                errorCode = ErrorCode.valueOf(key);
-            } catch (IllegalArgumentException e) {
-                errorCode = ErrorCode.INTERNAL_ERROR;
-            }
-
-            ErrorResponse response = ErrorResponse.builder()
-                    .errorCode(errorCode.getCode())
-                    .errorMessage(errorCode.getMessage())
-                    .build();
-
-            errorList.add(response);
-        });
-
-        return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(body, ex.getHttpStatus());
     }
 }

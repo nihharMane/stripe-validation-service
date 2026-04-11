@@ -39,7 +39,8 @@ public enum ErrorCode {
 
     STRIPE_ERROR(20001, "Stripe error"),
 
-    INTERNAL_ERROR(90001, "Internal server error");
+    INTERNAL_ERROR(90001, "Internal server error"),
+    FIRSTNAME_CONTAIN_HELLO(10028, "First name must not be hello" ),;
 
     private final int code;
     private final String message;
