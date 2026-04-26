@@ -1,14 +1,19 @@
 package com.Validation.payments.serviceImpl;
 
+import com.Validation.payments.Constants.ErrorCode;
 import com.Validation.payments.Constants.ValidatorRuleEnum;
+import com.Validation.payments.Exception.PaymentValidationException;
 import com.Validation.payments.pojo.PaymentRequest;
 import com.Validation.payments.service.BusinessValidator;
 import com.Validation.payments.service.PaymentService;
 
+import com.Validation.payments.util.HmacSHA256Util;
+import com.Validation.payments.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,15 +22,40 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
-    //read value form application.properties file of validator
+
     @Value("${validator.rule.name}")
     private String validatorRuleName;
 
-
+    private final JsonUtil jsonUtil;
     private final ApplicationContext applicationContext;
 
+
     @Override
-    public String ValidateAndCreatePayment(PaymentRequest paymentRequest) {
+    public String ValidateAndCreatePayment(PaymentRequest paymentRequest, String headerHmacSignature) {
+
+        if (headerHmacSignature == null || headerHmacSignature.isEmpty()) {
+            log.error("Hmac Signature is missing in the request header");
+            throw new PaymentValidationException(
+                    ErrorCode.MISSING_HMAC.getCode(),
+                    ErrorCode.MISSING_HMAC.getMessage(),
+                    HttpStatus.UNAUTHORIZED
+            );
+        }
+
+       String jsonString = jsonUtil.convertObjectToJson(paymentRequest);
+
+        String CalculatedHamc= HmacSHA256Util.generateHmac(jsonString);
+        log.info("Hmac Signature validation failed. Calculated: {}, Provided: {}", CalculatedHamc, headerHmacSignature);
+
+        if(!CalculatedHamc.equals(headerHmacSignature)){
+            log.error("Hmac Signature validation failed. Calculated: {}, Provided: {}", CalculatedHamc, headerHmacSignature);
+            throw new PaymentValidationException(
+                    ErrorCode.INVALID_HMAC.getCode(),
+                    ErrorCode.INVALID_HMAC.getMessage(),
+                    HttpStatus.UNAUTHORIZED
+            );
+        }
+
         String[] rules= validatorRuleName.split(",");
         for (String rule : rules){
             log.info("Applying Validator rule:{}", rule);
@@ -43,11 +73,12 @@ public class PaymentServiceImpl implements PaymentService {
             continue;
         }
          businessValidator.validate(paymentRequest);
-            log.info("Validator rule {} applied successfully : {}",paymentRequest);
+            log.info("Validator rule {} applied successfully : {}",rule,paymentRequest);
 
         }
         log.info("Validating Payment..." );
         return "Payment validated and created successfully!";
     }
+
 
 }

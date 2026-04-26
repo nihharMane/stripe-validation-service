@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class PaymentRequest {
+public class  PaymentRequest {
 
     @NotNull(message = "USER_REQUIRED")
     @Valid

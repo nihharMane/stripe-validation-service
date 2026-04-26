@@ -40,7 +40,11 @@ public enum ErrorCode {
     STRIPE_ERROR(20001, "Stripe error"),
 
     INTERNAL_ERROR(90001, "Internal server error"),
-    FIRSTNAME_CONTAIN_HELLO(10028, "First name must not be hello" ),;
+    FIRSTNAME_CONTAIN_HELLO(10028, "First name must not be hello" ),
+    DUPLICATE_TRANSACTION(10029, "Duplicate transaction detected"),
+    FAILED_TO_SAVE(10030, "Failed to save merchant payment request validation"),
+    INVALID_HMAC(10031, "Invalid HMAC signature"),
+    MISSING_HMAC(10032, "Missing HMAC signature");
 
     private final int code;
     private final String message;

@@ -19,6 +19,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON validations.* TO 'validations_user'@'%';
 -- GRANT END Either this.
 
 -- Create Tables validations Schema Start --
+
 CREATE TABLE validations.`merchant_payment_request` (
  `id` int NOT NULL AUTO_INCREMENT,
  `endUserID` varchar(100),
@@ -28,7 +29,6 @@ CREATE TABLE validations.`merchant_payment_request` (
  PRIMARY KEY (`id`),
 UNIQUE KEY (`merchantTxnReference`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 
 CREATE TABLE validations.`validation_rules` (
  `id` int NOT NULL AUTO_INCREMENT,

@@ -1,16 +1,13 @@
 package com.Validation.payments.Constants;
 
 import com.Validation.payments.service.BusinessValidator;
-import com.Validation.payments.serviceImpl.Validator.ValidatorRule1;
-import com.Validation.payments.serviceImpl.Validator.ValidatorRule2;
-import com.Validation.payments.serviceImpl.Validator.ValidatorRule3;
+import com.Validation.payments.Validator.DuplicateTxnValidation;
 
 import java.util.Optional;
 
 public enum ValidatorRuleEnum {
-    VALIDATOR_RULE1("VALIDATOR_RULE1", ValidatorRule1.class),
-    VALIDATOR_RULE2("VALIDATOR_RULE2", ValidatorRule2.class),
-    VALIDATOR_RULE3("VALIDATOR_RULE3", ValidatorRule3.class);
+
+    VALIDATOR_RULE1("Duplicate_Txn_Validator", DuplicateTxnValidation.class);
 
     private final String ruleName;
     private final Class<? extends BusinessValidator> validatorClass;
@@ -18,14 +15,6 @@ public enum ValidatorRuleEnum {
     ValidatorRuleEnum(String ruleName, Class<? extends BusinessValidator> validatorClass) {
         this.ruleName = ruleName;
         this.validatorClass = validatorClass;
-    }
-
-    public String getRuleName() {
-        return ruleName;
-    }
-
-    public Class<? extends BusinessValidator> getValidatorClass() {
-        return validatorClass;
     }
 
     public static Optional<Class<? extends BusinessValidator>> getValidatorClassByRule(String ruleName) {
@@ -41,3 +30,4 @@ public enum ValidatorRuleEnum {
         return Optional.empty();
     }
 }
+
