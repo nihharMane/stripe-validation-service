@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.LinkedHashMap;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -49,6 +51,21 @@ public class JsonUtil {
 
         } catch (Exception e) {
             log.error("Failed to convert object to JSON: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+    public String prepareFormattedJson(String body) {
+        if (body == null || body.isBlank()) {
+            return "";
+        }
+
+        try {
+             LinkedHashMap<String, Object> map =
+                    objectMapper.readValue(body, LinkedHashMap.class);
+            // Serialize back to JSON
+            return objectMapper.writeValueAsString(map);
+        } catch (Exception e) {
+            log.error("Error while formatting JSON body: {}", e.getMessage(), e);
             return null;
         }
     }

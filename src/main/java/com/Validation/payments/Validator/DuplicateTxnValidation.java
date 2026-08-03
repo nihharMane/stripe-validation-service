@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -33,7 +34,8 @@ public class DuplicateTxnValidation implements BusinessValidator {
        String json= jsonUtil.convertObjectToJson(paymentRequest);
        log.info("JSON String: {}", json);
 
-        int pkId = repository.saveMerchantPaymentRequestValidation(entity);
+        //int pkId = repository.saveMerchantPaymentRequestValidation(entity); //TODO
+        int pkId=new Random().nextInt(100);
         if (pkId == -1){
             log.error("Failed to Save Merchant Payment Request Validation");
             throw new PaymentValidationException(

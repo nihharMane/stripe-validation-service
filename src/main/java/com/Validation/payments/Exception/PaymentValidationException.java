@@ -9,9 +9,9 @@ import org.springframework.http.HttpStatus;
 @Setter
 @Getter
 public class PaymentValidationException extends RuntimeException{
-private int errorCode;
-private String errorMessage;
-private HttpStatus httpStatus;
+private final int errorCode;
+private final String errorMessage;
+private final HttpStatus httpStatus;
 
 public PaymentValidationException(int errorCode, String errorMessage, HttpStatus httpStatus) {
     super(errorMessage);
